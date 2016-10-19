@@ -86,14 +86,6 @@ Class Mongo_db
 	private $db, $connection;
 
 	/**
-	 *  Read/Write parameters.
-	 *  
-	 *  @var MongoDB\Driver\{BulkWrite, WriteConcern, ReadConcern, ReadPreference}
-	 */
-	private $bulk_write, $write_concern;
-	private $read_concern, $read_preference;
-
-	/**
 	 *  Is authentication needed to be used? When connection 
 	 *  through UNIX Domain Socket must be FALSE.
 	 *  
@@ -256,18 +248,6 @@ Class Mongo_db
 		catch (ConnectionException $e)
 		{
 			$this->error("Failed to connect to MongoDB: {$e->getMessage()}", __METHOD__);
-		}
-
-		try
-		{
-			$this->bulk_write      = new BulkWrite(self::BULK_WRITE_OPTIONS);
-			$this->write_concern   = new WriteConcern(self::WRITE_CONCERN_MODE, self::WRITE_CONCERN_TIMEOUT, self::WRITE_CONCERN_JOURNAL);
-			$this->read_concern    = new ReadConcern(self::READ_CONCERN_LEVEL);
-			$this->read_preference = new ReadPreference(self::READ_PREFERENCE_MODE);
-		}
-		catch (InvalidArgumentException $e)
-		{
-			$this->error("An error occurred during initialization of one of the following extensions (BulkWrite, WriteConcern, ReadConcern, ReadPreference): {$e->getMessage()}", __METHOD__);
 		}
 
 		return $this->db;
@@ -2631,18 +2611,21 @@ Class Mongo_db
 		
 		try
 		{
+			$read_concern    = new ReadConcern(self::READ_CONCERN_LEVEL);
+			$read_preference = new ReadPreference(self::READ_PREFERENCE_MODE);
+
 			$options += $this->options['get'] + [
 				'projection'  => $this->selects,
 				'sort'        => $this->sorts,
 				'skip'        => $this->offset,
 				'limit'       => $this->limit,
-				'readConcern' => $this->read_concern
+				'readConcern' => $read_concern
 			];
 			
 			$query = new Query($this->wheres, $options);
 
 			// Get documents list.
-			$cursor = $this->db->executeQuery($this->db_name . '.' . $collection, $query, $this->read_preference);
+			$cursor = $this->db->executeQuery($this->db_name . '.' . $collection, $query, $read_preference);
 
 			// Query reset.
 			if ($this->auto_reset_query === TRUE)
@@ -3642,10 +3625,13 @@ Class Mongo_db
 		
 		try
 		{
+			$bulk_write = new BulkWrite(self::BULK_WRITE_OPTIONS);
+			$write_concern = new WriteConcern(self::WRITE_CONCERN_MODE, self::WRITE_CONCERN_TIMEOUT, self::WRITE_CONCERN_JOURNAL);
+
 			$result = '';
 
-			$insert_id = $this->bulk_write->insert($document);
-			$write = $this->db->executeBulkWrite($this->db_name . '.' . $collection, $this->bulk_write, $this->write_concern);
+			$insert_id = $bulk_write->insert($document);
+			$write = $this->db->executeBulkWrite($this->db_name . '.' . $collection, $bulk_write, $write_concern);
 
 			// Query reset.
 			if ($this->auto_reset_query === TRUE)
@@ -3692,12 +3678,15 @@ Class Mongo_db
 		
 		try
 		{
+			$bulk_write = new BulkWrite(self::BULK_WRITE_OPTIONS);
+			$write_concern = new WriteConcern(self::WRITE_CONCERN_MODE, self::WRITE_CONCERN_TIMEOUT, self::WRITE_CONCERN_JOURNAL);
+
 			$result = [];
 			$inserts_ids = [];
 
 			foreach ($documents as $document)
 			{
-				$insert_id = $this->bulk_write->insert($document);
+				$insert_id = $bulk_write->insert($document);
 				
 				if (isset($insert_id) && $insert_id instanceof ObjectID)
 				{
@@ -3709,7 +3698,7 @@ Class Mongo_db
 				}
 			}
 			
-			$write = $this->db->executeBulkWrite($this->db_name . '.' . $collection, $this->bulk_write, $this->write_concern);
+			$write = $this->db->executeBulkWrite($this->db_name . '.' . $collection, $bulk_write, $write_concern);
 			
 			// Query reset.
 			if ($this->auto_reset_query === TRUE)
@@ -3760,8 +3749,11 @@ Class Mongo_db
 				'upsert' => FALSE
 			];
 
-			$this->bulk_write->update($this->wheres, $this->updates, $options);
-			$result = $this->db->executeBulkWrite($this->db_name . '.' . $collection, $this->bulk_write, $this->write_concern);
+			$bulk_write = new BulkWrite(self::BULK_WRITE_OPTIONS);
+			$write_concern = new WriteConcern(self::WRITE_CONCERN_MODE, self::WRITE_CONCERN_TIMEOUT, self::WRITE_CONCERN_JOURNAL);
+
+			$bulk_write->update($this->wheres, $this->updates, $options);
+			$result = $this->db->executeBulkWrite($this->db_name . '.' . $collection, $bulk_write, $write_concern);
 			
 			// Query reset.
 			if ($this->auto_reset_query === TRUE)
@@ -3856,8 +3848,11 @@ Class Mongo_db
 				'limit'  => TRUE
 			];
 
-			$this->bulk_write->delete($this->wheres, $options);
-			$result = $this->db->executeBulkWrite($this->db_name . '.' . $collection, $this->bulk_write, $this->write_concern);
+			$bulk_write = new BulkWrite(self::BULK_WRITE_OPTIONS);
+			$write_concern = new WriteConcern(self::WRITE_CONCERN_MODE, self::WRITE_CONCERN_TIMEOUT, self::WRITE_CONCERN_JOURNAL);
+
+			$bulk_write->delete($this->wheres, $options);
+			$result = $this->db->executeBulkWrite($this->db_name . '.' . $collection, $bulk_write, $write_concern);
 			
 			// Query reset.
 			if ($this->auto_reset_query === TRUE)
