@@ -32,7 +32,7 @@ use MongoDB\BSON\{Regex, UTCDatetime, Timestamp, ObjectID, Javascript};
 use MongoDB\Driver\{Query, Manager, BulkWrite, Cursor, WriteConcern, WriteResult, ReadPreference, ReadConcern};
 use MongoDB\Driver\Exception\{Exception, ConnectionException, InvalidArgumentException};
 
-Class MongoDB
+Class Mongo_db
 {
 	/**
 	 *  CodeIgniter handler.
