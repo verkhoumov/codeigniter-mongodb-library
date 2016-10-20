@@ -4537,6 +4537,22 @@ Class Mongo_db
 	///////////////////////////////////////////////////////////////////////////
 	
 	/**
+	 *  It pull the first element of the array.
+	 *  
+	 *  @param   array   $array  Get query result.
+	 *  @return  array
+	 */
+	public function row_array(array $array = []): array
+	{
+		if (!empty($array) && isset($array[0]))
+		{
+			return $array[0];
+		}
+
+		return $array;
+	}
+
+	/**
 	 *  @param   string  $field  <field>
 	 *  @return  $this
 	 */
