@@ -22,7 +22,7 @@
 * Широкие возможности конфигурации соединения.
 
 ## Start
-Для работы с библиотекой ознакомьтесь с [Wiki](https://github.com/verkhoumov/codeigniter-mongodb-library/wiki), там Вы сможете найти все доступные методы и примеры их использования.
+Для работы с библиотекой ознакомьтесь с [Wiki](https://github.com/verkhoumov/codeigniter-mongodb-library/wiki/Start), там Вы сможете найти все доступные методы и примеры их использования.
 
 ## Support
 Чтобы сообщить о проблеме или ошибке, а также предложить реализацию новых функций, используйте [issue tracker](https://github.com/verkhoumov/codeigniter-mongodb-library/issues). Там же Вы можете задать интересующие вопросы и обратиться за помощью. Буду рад любой помощи!
