@@ -8,7 +8,7 @@
  *  @since    14.10.2016
  *  @license  MIT License
  *  
- *  @version  1.0.0 First release
+ *  @version  1.0.3
  *  @link     https://github.com/verkhoumov/codeigniter-mongodb-library
  *
  *  ------------------------------------------------------------------------
@@ -26,7 +26,7 @@
  *			// Default: TRUE
  *			'auth' => FALSE,
  *
- *			// @var  boolean  Show debug info when working with data base?
+ *			// @var  boolean  Show debug info when working with DB?
  *			// Default: TRUE
  *			'debug' => TRUE,
  *
@@ -34,7 +34,7 @@
  *			// Default: array
  *			'return_as' => 'object',
  *
- *			// @var  boolean  Automatic reset of constructed query after it's initialization.
+ *			// @var  boolean  Automatic reset of constructed query after it's execution.
  *			// Default: TRUE
  *			'auto_reset_query' => TRUE
  *		],
@@ -79,6 +79,7 @@
  *		],
  *
  *		// @var  array  MongoDB driver options.
+ *		// @see  http://php.net/manual/en/mongodb-driver-manager.construct.php#mongodb-driver-manager.construct-driveroptions
  *		'driver' => []
  *	];
  *

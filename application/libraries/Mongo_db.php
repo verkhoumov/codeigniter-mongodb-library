@@ -4,7 +4,7 @@
  *  
  *  Open Source CodeIgniter MongoDB Library (ALL-IN-ONE).
  *
- *  This library is based on a brand new PHP 7.0 to work with CodeIgniter 
+ *  This library is based on a brand new PHP 7 to work with CodeIgniter 
  *  since version 3 and MongoDB since version 3.2. I have implemented the 
  *  following main functions MongoDB:  select, insert, update, delete and 
  *  aggregate documents; execute commands.
@@ -13,7 +13,7 @@
  *  @since    14.10.2016
  *  @license  MIT License
  *  
- *  @version  1.0.0 First release
+ *  @version  1.0.3
  *  @link     https://github.com/verkhoumov/codeigniter-mongodb-library
  *
  *  ------------------------------------------------------------------------
@@ -22,6 +22,10 @@
  *
  *  ------------------------------------------------------------------------
  */
+
+# TODO #1: Get document in format gotten from database, without convertation to object or array.
+# TODO #2: updateWhere, updateAllWhere.
+# TODO #3: deleteWhere, deleteAllWhere.
 
 /**
  *  MongoDB namespaces.
@@ -45,8 +49,8 @@ Class Mongo_db
 	 *  During library initialization and reconnection arguments
 	 *  recursively replaced with passed to method accordingly to priority type:
 	 *  
-	 *  1) High priority - data passed during [__construct()] and to method [reconnect()].
-	 *  2) Medium priority - data from config file [/configs/mongo_db.php].
+	 *  1) High priority - data passed during [__construct()], to methods [connect()] and [reconnect()].
+	 *  2) Medium priority - data from config file [/config/mongo_db.php].
 	 *  3) Low priority - values specified as default for class parameters
 	 */
 	private $config = [
@@ -57,14 +61,14 @@ Class Mongo_db
 	];
 
 	/**
-	 *  Group name in config file [/configs/mongo_db.php], used by default.
+	 *  Group name in config file [/config/mongo_db.php], used by default.
 	 *  
 	 *  @var string
 	 */
 	private $config_group = 'default';
 
 	/**
-	 *  CONFIG_FILE_NAME - config file name [/configs/mongo_db.php].
+	 *  CONFIG_FILE_NAME - config file name [/config/mongo_db.php].
 	 *  CONFIG_ARRAY_NAME - array name in config file. Array contains list of groups
 	 *  and other parameters (for example, active_config_group).
 	 */
@@ -227,7 +231,7 @@ Class Mongo_db
 	 *  New connection to DB.
 	 *
 	 *  @uses    $this->mongo_db->connect();
-	 *  @uses    $this->mongo_db->reconnect(['config_group' => 'default_group']);
+	 *  @uses    $this->mongo_db->connect(['config_group' => 'default_group']);
 	 *  
 	 *  @param   array   $config  [Group name and config parameters]
 	 *  @see __construct @param description.
@@ -874,7 +878,7 @@ Class Mongo_db
 	}
 
 	/**
-	 *  $fields value NO equal $value ($fields != $value).
+	 *  $fields value NOT equal $value ($fields != $value).
 	 *  
 	 *  @see      https://docs.mongodb.com/manual/reference/operator/query/ne/
 	 *  @see      https://docs.mongodb.com/manual/core/document/#document-dot-notation for $fields
@@ -2783,8 +2787,8 @@ Class Mongo_db
 	 *  @uses     $this->mongo_db->inc('phone.cost', -75.50)->where('phone-cost', 500)->update('cart');
 	 *  @uses     $this->mongo_db->inc(['phone.cost' => 25, 'phone.priority' => -1])->update('cart');
 	 *  
-	 *  @param    string|array   $fields  <field> OR [<field1> => <amount1>, <field2> => <amount2>, ...]
-	 *  @param    integer|float  $number  <amount>
+	 *  @param    string|array   $fields  <field> OR [<field1> => <number1>, <field2> => <number2>, ...]
+	 *  @param    integer|float  $number  <number>
 	 *
 	 *  $number can be positive (for increment) or negative (for decrement).
 	 *  
@@ -2910,7 +2914,7 @@ Class Mongo_db
 	 *  @uses     $this->mongo_db->setOnInsert('status.variants', ['stable', 'relase', 'alpha'])->update('statuses');
 	 *  @uses     $this->mongo_db->setOnInsert(['status.code' => 'stable', 'status.priority' => 100])->update('statuses');
 	 *  
-	 *  @param    string|array   $fields  <field> OR [<field1> => <value1>, <field2> => <string2>, ...]
+	 *  @param    string|array   $fields  <field> OR [<field1> => <value1>, <field2> => <value2>, ...]
 	 *  @param    mixed          $value   <value>
 	 *  @return   $this
 	 */
@@ -2956,7 +2960,7 @@ Class Mongo_db
 	 *  @uses     $this->mongo_db->set('title', 'Super news')->where('_id' => 999)->update('news');
 	 *  @uses     $this->mongo_db->set(['tags' => ['tagA', 'tagB', 'tagC'], 'title' => 'Super news', 'rank' => 0])->updateAll('news');
 	 *  
-	 *  @param    string|array   $fields  <field> OR [<field1> => <value1>, <field2> => <string2>, ...]
+	 *  @param    string|array   $fields  <field> OR [<field1> => <value1>, <field2> => <value2>, ...]
 	 *  @param    mixed          $value   <value>
 	 *  @return   $this
 	 */
@@ -3364,13 +3368,13 @@ Class Mongo_db
 	}
 
 	/**
-	 *  Deletes all listed elements satisfying given conditions from array
+	 *  Deletes all listed elements satisfying given conditions from array.
 	 *  
 	 *  @see      https://docs.mongodb.com/manual/reference/operator/update/pull/
 	 *  @see      https://docs.mongodb.com/manual/core/document/#document-dot-notation for $fields
 	 *
 	 *  @uses     $this->mongo_db->pull('vegetables', 'carrots')->update('fruitsCollection');
-	 *  @uses     $this->mongo_db->pull(['fruits' => ['$in' => ['apples', 'oranges']], vegetables => 'carrots'])->update('fruitsCollection');
+	 *  @uses     $this->mongo_db->pull(['fruits' => ['$in' => ['apples', 'oranges']], 'vegetables' => 'carrots'])->update('fruitsCollection');
 	 *  
 	 *  @param    string|array   $fields  <field> OR [<field1> => <value1|condition1>, <field2> => <value2|condition2>, ...]
 	 *  @param    mixed          $value   <value|condition>
@@ -3472,7 +3476,7 @@ Class Mongo_db
 	}
 
 	/**
-	 *  Adds new values to source array.
+	 *  Adds new value to source array.
 	 *  
 	 *  @see      https://docs.mongodb.com/manual/reference/operator/update/push/
 	 *  @see      https://docs.mongodb.com/manual/core/document/#document-dot-notation for $fields
@@ -3481,22 +3485,22 @@ Class Mongo_db
 	 *  @uses     $this->mongo_db->push(['scores' => 89, 'players' => 6, 'type' => 'basketball'])->update('games');
 	 *  
 	 *  @param    string|array  $fields   <field> OR [<field1> => <value1>, <field2> => <value2>, ...]
-	 *  @param    mixed         $data     <value>
+	 *  @param    mixed         $value    <value>
 	 *  @return   $this
 	 */
-	public function push($fields, $data = ''): self
+	public function push($fields, $value = ''): self
 	{
-		if (isset($fields, $data) && is_string($fields) && $fields != '')
+		if (isset($fields, $value) && is_string($fields) && $fields != '')
 		{
-			$this->push_update_method('$push', [$fields => $data]);
+			$this->push_update_method('$push', [$fields => $value]);
 		}
 		elseif (isset($fields) && is_array($fields) && !empty($fields))
 		{
-			foreach ($fields as $field => $data)
+			foreach ($fields as $field => $value)
 			{
 				if (is_string($field) && $field != '')
 				{
-					$this->push_update_method('$push', [$fields => $data]);
+					$this->push_update_method('$push', [$fields => $value]);
 				}
 				else
 				{
@@ -3817,7 +3821,6 @@ Class Mongo_db
 
 
 
-
 	///////////////////////////////////////////////////////////////////////////
 	//
 	//  DELETE exec.
@@ -3981,7 +3984,7 @@ Class Mongo_db
 	 */
 	public function command(array $command = []): array
 	{
-		return $this->_command($command);
+		return $this->_command($command, __METHOD__);
 	}
 
 	/**
@@ -4013,7 +4016,7 @@ Class Mongo_db
 			'pipeline'  => $pipeline
 		] + $options;
 
-		return $this->_command($command);
+		return $this->_command($command, __METHOD__);
 	}
 
 
@@ -4047,13 +4050,13 @@ Class Mongo_db
 	}
 
 	/**
-	 *  [Create date by MongoDB\BSON\Timestamp.]
+	 *  Create date by MongoDB\BSON\Timestamp.
 	 *
 	 *  @uses    ['time' => $this->mongo_db->timestamp()];
 	 *  @uses    ['timestamp' => $this->mongo_db->timestamp(time())];
 	 *  
-	 *  @param   int          $time  [Timestamp in seconds]
-	 *  @param   int|integer  $inc   [Integer denoting the incrementing ordinal for operations within a given second]
+	 *  @param   int     $time  [Timestamp in seconds]
+	 *  @param   int     $inc   [Integer denoting the incrementing ordinal for operations within a given second]
 	 *  @return  Timestamp
 	 */
 	public function timestamp(int $time = 0, int $inc = 0): Timestamp
@@ -4083,7 +4086,7 @@ Class Mongo_db
 	 *  @uses    $this->mongo_db->switch_db('MySuperProject');
 	 *  
 	 *  @param   string  $database  [New name for database]
-	 *  @return  Manager
+	 *  @return  MongoDB\Driver\Manager
 	 */
 	public function switch_db(string $database = ''): Manager
 	{
@@ -4135,7 +4138,7 @@ Class Mongo_db
 	 */
 	private function config(array $manual_config = []): self
 	{
-		// Config data from file /configs/mongo_db.php.
+		// Config data from file /config/mongo_db.php.
 		$this->CodeIgniter->load->config(self::CONFIG_FILE_NAME);
 		$file_config = $this->CodeIgniter->config->item(self::CONFIG_ARRAY_NAME);
 
@@ -4539,17 +4542,20 @@ Class Mongo_db
 	/**
 	 *  It pull the first element of the array.
 	 *  
-	 *  @param   array   $array  Get query result.
+	 *  @param   array    $array  Get query result.
+	 *  @param   integer  $n      Array row number.
 	 *  @return  array
 	 */
-	public function row_array(array $array = []): array
+	public function row_array(array $array = [], integer $n = 0): array
 	{
-		if (!empty($array) && isset($array[0]))
+		$result = [];
+
+		if (!empty($array) && array_key_exists($n, $array))
 		{
-			return $array[0];
+			$result = $array[$n];
 		}
 
-		return $array;
+		return $result;
 	}
 
 	/**
