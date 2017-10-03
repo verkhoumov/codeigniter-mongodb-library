@@ -4546,8 +4546,10 @@ Class Mongo_db
 	 *  @param   integer  $n      Array row number.
 	 *  @return  array
 	 */
-	public function row_array(array $array = [], integer $n = 0): array
+	public function row_array(array $array = [], float $n = 0): array
 	{
+		$n = (integer) $n;
+		
 		$result = [];
 
 		if (!empty($array) && array_key_exists($n, $array))
