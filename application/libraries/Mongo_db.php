@@ -13,7 +13,7 @@
  *  @since    14.10.2016
  *  @license  MIT License
  *  
- *  @version  1.0.3
+ *  @version  1.1.0
  *  @link     https://github.com/verkhoumov/codeigniter-mongodb-library
  *
  *  ------------------------------------------------------------------------
@@ -33,7 +33,7 @@
 use function MongoDB\BSON\{toJSON, fromPHP};
 
 use MongoDB\BSON\{Regex, UTCDatetime, Timestamp, ObjectID, Javascript};
-use MongoDB\Driver\{Query, Manager, BulkWrite, Cursor, WriteConcern, WriteResult, ReadPreference, ReadConcern};
+use MongoDB\Driver\{Query, Manager, Command, BulkWrite, Cursor, WriteConcern, WriteResult, ReadPreference, ReadConcern};
 use MongoDB\Driver\Exception\{Exception, ConnectionException, InvalidArgumentException};
 
 Class Mongo_db
