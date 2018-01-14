@@ -4097,6 +4097,24 @@ Class Mongo_db
 		
 		return $this->reconnect(['config' => array_replace_recursive($this->config, ['connection' => ['db_name' => $database]])]);
 	}
+	
+	/**
+	 *  Changes database by config_group. Works if parameter 'connection_string' in config is not presented.
+	 *
+	 *  @uses    $this->mongo_db->switch_group('MyOtherGroup');
+	 *  
+	 *  @param   string  $config_group  [New name for group config database]
+	 *  @return  MongoDB\Driver\Manager
+	 */
+	public function switch_group(string $config_group = ''): Manager
+	{
+		if ($database == '')
+		{
+			$this->error('To switch MongoDB databases, a new config group name must be specified', __METHOD__);
+		}
+		
+		return $this->reconnect(['config_group' => $config_group]);
+	}
 
 	/**
 	 *  Resets last completed query.
