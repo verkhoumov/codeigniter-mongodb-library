@@ -1544,7 +1544,7 @@ Class Mongo_db
 	 *  @param    bool|boolean  $enable_end_wildcard    [Should be used closing symbol $]
 	 *  @return   Regex
 	 */
-	public function regex(string $regex = '', string $flags = 'i', bool $enable_start_wildcard = TRUE, bool $enable_end_wildcard = TRUE): Regex
+	public function regex(string $regex = '', string $flags = 'i', bool $enable_start_wildcard = TRUE, bool $enable_end_wildcard = TRUE)
 	{
 		$regex = quotemeta($regex);
 		
@@ -1558,7 +1558,7 @@ Class Mongo_db
 			$regex .= '$';
 		}
 
-		return Regex($regex, (string) $flags);
+		return new Regex($regex, (string) $flags);
 	}
 
 	/**
@@ -3939,8 +3939,10 @@ Class Mongo_db
 		
 		try
 		{
+			$read_preference = new ReadPreference(self::READ_PREFERENCE_MODE);
 			$command = new Command($command);
-			$cursor = $this->db->executeCommand($this->db_name, $command, $this->read_preference);
+
+			$cursor = $this->db->executeCommand($this->db_name, $command, $read_preference);
 
 			$result = [];
 
