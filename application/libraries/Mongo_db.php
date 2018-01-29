@@ -13,7 +13,7 @@
  *  @since    14.10.2016
  *  @license  MIT License
  *  
- *  @version  1.1.0
+ *  @version  1.1.2
  *  @link     https://github.com/verkhoumov/codeigniter-mongodb-library
  *
  *  ------------------------------------------------------------------------
@@ -26,6 +26,7 @@
 # TODO #1: Get document in format gotten from database, without convertation to object or array.
 # TODO #2: updateWhere, updateAllWhere.
 # TODO #3: deleteWhere, deleteAllWhere.
+# TODO #4: switch_db by config_group.
 
 /**
  *  MongoDB namespaces.
