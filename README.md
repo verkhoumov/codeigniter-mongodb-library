@@ -28,4 +28,4 @@
 Чтобы сообщить о проблеме или ошибке, а также предложить реализацию новых функций, используйте [issue tracker](https://github.com/verkhoumov/codeigniter-mongodb-library/issues). Там же Вы можете задать интересующие вопросы и обратиться за помощью. Буду рад любой помощи!
 
 ## Copyright & License
-Code copyright 2016-2017 by [Dmitriy Verkhoumov](https://github.com/verkhoumov). Code released under the [MIT License](https://github.com/verkhoumov/codeigniter-mongodb-library/blob/master/LICENSE).
+Code copyright 2016-2018 by [Dmitriy Verkhoumov](https://github.com/verkhoumov). Code released under the [MIT License](https://github.com/verkhoumov/codeigniter-mongodb-library/blob/master/LICENSE).
