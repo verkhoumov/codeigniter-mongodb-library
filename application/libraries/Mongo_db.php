@@ -13,7 +13,7 @@
  *  @since    14.10.2016
  *  @license  MIT License
  *  
- *  @version  1.1.2
+ *  @version  1.1.3
  *  @link     https://github.com/verkhoumov/codeigniter-mongodb-library
  *
  *  ------------------------------------------------------------------------
@@ -2338,18 +2338,37 @@ Class Mongo_db
 	/**
 	 *  Checks sorting type and adapts it to MongoDB.
 	 *  
-	 *  @param   mixed  $sort  [Sort type: ASC|DESC]
-	 *  @return  integer
+	 *  @param   mixed   $sort  [Sort type: ASC|DESC]
+	 *  @return  integer|array
 	 */
-	private function get_sort_type($sort): int
+	private function get_sort_type($sort)
 	{
-		if ($sort == -1 || $sort === FALSE || strtolower($sort) == 'desc')
+		if (is_array($sort))
 		{
-			return -1;
+			if (empty($sort))
+			{
+				$this->error('An array with sort parameters can not be empty!', __METHOD__);
+			}
+
+			$result = [];
+
+			foreach ($sort as $key => $value)
+			{
+				$result[$key] = $this->get_sort_type($value);
+			}
+
+			return $result;
 		}
 		else
 		{
-			return 1;
+			if ($sort == -1 || $sort === FALSE || strtolower($sort) == 'desc')
+			{
+				return -1;
+			}
+			else
+			{
+				return 1;
+			}
 		}
 	}
 
@@ -2505,7 +2524,7 @@ Class Mongo_db
 	 *  @param   stdClass  $document  [Document]
 	 *  @return  stdClass
 	 */
-	public function document_to_object(stdClass $document): stdClass
+	public function document_to_object(stdClass $document = NULL): stdClass
 	{
 		$result = [];
 
@@ -2550,7 +2569,7 @@ Class Mongo_db
 	 *  @param    mixed   $id  [Document ID]
 	 *  @return   MongoDB\BSON\ObjectID
 	 */
-	public function create_document_id($id): ObjectID
+	public function create_document_id($id = NULL): ObjectID
 	{
 		if (isset($id))
 		{
@@ -3995,7 +4014,14 @@ Class Mongo_db
 	 *
 	 *  @see     https://docs.mongodb.com/manual/reference/operator/aggregation/
 	 *
-	 *  @uses    $this->mongo_db->aggregate('orders', ['$project' => ['cusip' => 1, 'date' => 1, 'price' => 1, '_id' => 0 ]], ['allowDiskUse' => TRUE]);
+	 *  @uses    $this->mongo_db->aggregate('orders', [
+	 *           	[
+	 *           		'$project' => ['cusip' => 1, 'date' => 1, 'price' => 1, '_id' => 0 ]
+	 *           	]
+	 *           ], ['allowDiskUse' => TRUE]);
+	 *
+	 *  NOTE: if you are using MongoDB version 3.6 or later, be sure to specify 
+	 *  the `cursors` option in the `$options`.
 	 *  
 	 *  @param   string  $collection  <collectionName>
 	 *  @param   array   $pipeline    Aggregation query
